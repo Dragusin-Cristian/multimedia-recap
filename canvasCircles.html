@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</head>
+<style>
+    #center{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+</style>
+<body>
+        <div id="center">
+            <canvas id="canvas"></canvas>
+        </div>
+        <input type="number" class="form-control col-lg-4 col-md-3 col-sm-2" id="input1" aria-describedby="emailHelp">
+        <input type="number" class="form-control col-lg-4 col-md-3 col-sm-2" id="input2" aria-describedby="emailHelp">
+        <input type="number" class="form-control col-lg-4 col-md-3 col-sm-2" id="input3" aria-describedby="emailHelp">
+        <button class="btn btn-primary col-lg-2 col-md-3 col-sm-7" id="btn">Submit</button>
+
+    <script>
+        const input1 = document.getElementById("input1");
+        const input2 = document.getElementById("input2");
+        const input3 = document.getElementById("input3");
+        const btn = document.getElementById("btn");
+        const canvas = document.getElementById("canvas");
+        const circles = [];
+
+        const validateInputValue = (input) => {
+            const value = input.value;
+            if (!Number.isInteger(+value) || +value > 10 || +value < 5) {
+                return false;
+            }
+            return true;
+        };
+
+        btn.addEventListener("click", () => {
+            const inputs = [input1, input2, input3];
+            let allValid = true;
+
+            for (const input of inputs) {
+                const isValid = validateInputValue(input);
+                if (!isValid) {
+                    input.classList.add("is-invalid");
+                    allValid = false;
+                }
+            }
+
+            if (allValid) {
+                canvas.width = parseInt(input1.value) * 100;
+                canvas.height = parseInt(input1.value) * 100;
+            }
+        });
+
+        function drawCircle(event) {
+            const ctx = canvas.getContext("2d");
+            const circleRadius = parseInt(input2.value, 10);
+
+            // Get the click coordinates
+            const x = event.clientX - canvas.getBoundingClientRect().left;
+            const y = event.clientY - canvas.getBoundingClientRect().top;
+
+            // Generate a random color for the circle fill
+            const randomFillColor = getRandomColor();
+
+            // Draw the circle
+            ctx.beginPath();
+            ctx.arc(x, y, circleRadius * 5, 0, 2 * Math.PI);
+            ctx.strokeStyle = "blue";
+            ctx.fillStyle = randomFillColor;
+            ctx.fill();
+            ctx.stroke();
+
+            // Add circle information to the array
+            circles.push({ x, y, radius: circleRadius * 5, fillColor: randomFillColor });
+
+            // Limit the array size to the value in the third input
+            if (circles.length > parseInt(input3.value, 10)) {
+                const removedCircle = circles.shift(); // Remove the oldest circle
+                // Clear the area of the removed circle
+                ctx.clearRect(removedCircle.x - 1 - removedCircle.radius, removedCircle.y - 1 - removedCircle.radius, 2 * removedCircle.radius + 2, 2 * removedCircle.radius + 2);
+            }
+        }
+
+        function getRandomColor() {
+            const letters = "0123456789ABCDEF";
+            let color = "#";
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        canvas.addEventListener("click", function (event) {
+            drawCircle(event);
+        });
+    </script>
+</body>
+</html>

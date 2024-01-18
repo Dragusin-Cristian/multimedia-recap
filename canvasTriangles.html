@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .containerCanvas {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .canvas{
+            border: 10px dotted black;
+            width: 600px;
+            height: 600px;
+        }
+
+        .customInput{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="containerCanvas">
+    <canvas  class="canvas" id="myCanvas">
+    </canvas >
+</div>
+    <div class="input-group mb-3 container-sm customInput">
+        <input type="number" id="input" min="1" max="600" class="form-control col-lg col-md-12 col-sm-6" >
+        <button type="button" id="btn" class="btn btn-secondary col-lg-4 col-md-12 col-sm-6">Draw</button>
+      </div>
+
+      <script>
+        var btn = document.getElementById("btn");
+        var input = document.getElementById("input");
+
+        btn.addEventListener("click", () => {
+            var value = input.value;
+            var intValue = parseInt(value);
+
+            console.log(intValue);
+
+            if( !Number.isInteger(intValue)){
+                btn.classList.remove("btn-secondary")
+                btn.classList.add("btn-danger")
+            btn.textContent = "Invalid, try again"
+            }else{
+                btn.classList.remove("btn-danger")
+                btn.classList.add("btn-secondary")
+                btn.textContent = "Draw"
+
+                var canvasElement = document.querySelector("#myCanvas");
+                var context = canvasElement.getContext("2d");
+
+                // the triangle
+                context.beginPath();
+                context.moveTo(0, 0);
+                context.lineTo(150, 75);
+                context.lineTo(intValue/2, 0);
+                context.closePath();
+
+                // the outline
+                context.lineWidth = 0;
+                context.strokeStyle = 'red';
+                context.stroke();
+
+                // the fill color
+                context.fillStyle = "red";
+                context.fill();
+
+
+
+                // the triangle
+                context.beginPath();
+                context.moveTo(300, 0);
+                context.lineTo(150, 75);
+                context.lineTo(300, intValue/4);
+                context.closePath();
+
+                // the outline
+                context.lineWidth = 0;
+                context.strokeStyle = 'green';
+                context.stroke();
+
+                // the fill color
+                context.fillStyle = "green";
+                context.fill();
+
+
+
+                // the triangle
+                context.beginPath();
+                context.moveTo(300, 150);
+                context.lineTo(150, 75);
+                context.lineTo(300-(intValue/2), 150);
+                context.closePath();
+
+                // the outline
+                context.lineWidth = 0;
+                context.strokeStyle = 'blue';
+                context.stroke();
+
+                // the fill color
+                context.fillStyle = "blue";
+                context.fill();
+
+
+
+                // the triangle
+                context.beginPath();
+                context.moveTo(0, 150);
+                context.lineTo(150, 75);
+                context.lineTo(0, 150-(intValue/4));
+                context.closePath();
+
+                // the outline
+                context.lineWidth = 0;
+                context.strokeStyle = 'yellow';
+                context.stroke();
+
+                // the fill color
+                context.fillStyle = "yellow";
+                context.fill();
+            }
+            
+
+
+            
+        })
+      </script>
+</body>
+</html>

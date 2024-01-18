@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+
+    <script>
+        window.onload = function() {
+   
+            let recognition = new (window.SpeechRecognition 
+                || window.webkitSpeechRecognition);
+
+            let synthesis = window.speechSynthesis;
+            
+            synthesis.onvoiceschanged = function() {
+                let voices = synthesis.getVoices();
+                synthesis.voice = voices[6];
+
+                let utterance = new SpeechSynthesisUtterance("Let's play");
+                synthesis.speak(utterance);
+            }
+
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.continouos = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onend = function(){
+                // ...
+            }
+
+            recognition.onresult = function(event) {
+                let sentence = event.results[0][0].transcript;
+                console.log(sentence);
+                recognition.stop();                
+            }
+        }
+    </script>
+</body>
+</html>

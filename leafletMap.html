@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaflet Map App</title>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <!-- Include Leaflet CSS and JavaScript -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    #center{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="myMap" style="height: 500px"></div>
+
+
+      <input type="number" class="form-control col-lg-4 col-md-3 col-sm-6" id="lat">
+      <input type="number" class="form-control col-lg-4 col-md-3 col-sm-3" id="lon">
+    <button id="button" class="btn btn-primary col-lg-2 col-md-3 col-sm-2">Enter</button>
+
+      </div>
+    </div>
+
+
+  <script>
+    window.onload = function () {
+        const btn = document.getElementById("button")
+        const latInput = document.getElementById("lat")
+        const lonInput = document.getElementById("lon")
+        let map = L.map('myMap')
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: 'MyTest'
+        }).addTo(map);
+
+        const addPosisitionOnMap = (lat, lon) => {
+            map.setView([lat, lon], 12);
+            L.marker([lat, lon]).addTo(map);
+            // popup:
+            let newMarker = L.marker([lat, lon]).addTo(map);
+            newMarker.bindPopup(lat + ", " + lon).openPopup();
+            // red circle area:
+            // L.circle([lat, lon], {
+            //     color: 'red',
+            //     fillColor: '#ff0033',
+            //     fillOpacity: 0.5,
+            //     radius: accuracy
+            // }).addTo(map);
+        }
+
+        btn.addEventListener("click", () => {
+            const lat  = parseInt(latInput.value)
+            const lon  = parseInt(lonInput.value)
+            let allValid = true
+
+            if(!Number.isInteger(lat) || lat < -90 || lat > 90){
+                latInput.classList.add("is-invalid");
+                allValid = false
+            }else{
+                latInput.classList.remove("is-invalid");
+            }
+            if(!Number.isInteger(lon) || lon < -180 || lon > 180){
+                lonInput.classList.add("is-invalid");
+                allValid = false
+            }else{
+                lonInput.classList.remove("is-invalid");
+            }
+
+            if(allValid){
+                addPosisitionOnMap(lat, lon)
+            }
+        });
+
+
+        navigator.geolocation.getCurrentPosition(onLocationSuccess, onLocationError)
+        function onLocationSuccess(position) {
+            console.log(position.coords.accuracy);
+            console.log(position);
+
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+            let accuracy = position.coords.accuracy;
+
+            addPosisitionOnMap(0, 0)
+            addPosisitionOnMap(lat, lon)
+        }
+
+        function onLocationError(error) {
+            console.log(error);
+        }
+
+
+    }
+  </script>
+</body>
+</html>
